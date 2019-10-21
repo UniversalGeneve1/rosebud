@@ -1,0 +1,219 @@
+Metadata-Version: 2.1
+Name: rosebud
+Version: 0.1
+Summary: A python data exploration and analytics package
+Home-page: https://github.com/ralphpuzon/rosebud
+Author: Ralph Puzon
+Author-email: puzonralph@gmail.com
+License: UNKNOWN
+Description: # rosebud
+        
+        ```rosebud``` is an open-source tool for pulling CSVs into python, and immediately extracting basic statistics (mean, median, mode, quartile
+        data, etc.) into variables, and has the capability of plotting these preliminary statistics via seaborn pairplots. rosebud also uses the visual capabilities of [missingno](https://github.com/ResidentMario/missingno) to show a visual representation of the missing data within the CSVs.
+        
+        rosebud is currently a single-handed project, and welcomes the community for contributions.  
+        
+        ## Installation
+        
+        Current implementation will require user to download the script into the working directory, and import into script by using
+        
+        ```python
+        from rosebud import *
+        ```
+        rosebud will be installable via the [pip](https://pip.pypa.io/en/stable/) package manager in the future.
+        
+        ##### Required packages:
+        - os
+        - numpy
+        - pandas
+        - matplotlib.pyplot
+        - seaborn
+        - [missingno](https://github.com/ResidentMario/missingno)
+        -  warnings
+        
+        ## Usage
+        
+        ### tablesandstats()
+        ```python
+        tablesandstats(filepath, show_plots = 'all')
+        ```
+        
+        rosebud's ```tablesandstats()``` function is the libraries main function that does the following:
+        - Import the .csv file into your workspace, and turn the file into a DataFrame.
+        - Create the statistic variables of the DataFrame, following the pattern name ```columnName_indexName```, derived from python's ```df.summary()``` function.
+        - Generate a correlation matrix heatmap of the DataFrame.
+        - Generate a "missing value ratio" grid for your columns, which shows what percentage of the data are null/NaN values.
+        - Creates a visualization of the missing valuves via missingno's ```missingo.matrix()``` function
+        
+        ###### *for the following example, we will be using a file called 'Future_500'
+        
+        Example:
+        
+        calling:
+        ```python
+        tablesandvars("C:/Users/YourName/.../Future_500.csv")
+        ```
+        
+        returns:
+        ```text
+        Rosebud is creating tables and statistics from Future 500...
+        
+        Measures of Center and Basic Descriptive Statistics of Future 500: 
+                        ID    Inception    Employees        Profit
+        count  500.000000   499.000000   498.000000  4.980000e+02
+        mean   250.500000  2010.174349   148.610442  6.539474e+06
+        std    144.481833     3.228211   397.353657  3.869934e+06
+        min      1.000000  1999.000000     1.000000  1.243400e+04
+        25%    125.750000  2009.000000    27.250000  3.272074e+06
+        50%    250.500000  2011.000000    56.000000  6.513366e+06
+        75%    375.250000  2012.000000   126.000000  9.303951e+06
+        max    500.000000  2014.000000  7125.000000  1.962453e+07
+        
+        Feature Data Types of Future 500:
+        ID             int64
+        Name          object
+        Industry      object
+        Inception    float64
+        Employees    float64
+        State         object
+        City          object
+        Revenue       object
+        Expenses      object
+        Profit       float64
+        Growth        object
+        
+        
+        Feature Corrrelations of Future 500:
+        ```
+        ![Future_500_correlation_hmap](https://github.com/RalphPuzon/rosebud/blob/master/rosebud_readme_images/Future_500_correlation_hmap.jpg)
+        
+        ```text
+        Dataset completeness of Future 500:
+        
+        - Future 500 missing value ratio (percentage):
+        
+        ID           0.0
+        Name         0.0
+        Industry     0.4
+        Inception    0.2
+        Employees    0.4
+        State        0.8
+        City         0.0
+        Revenue      0.4
+        Expenses     0.6
+        Profit       0.4
+        Growth       0.2
+        
+        - Visual representation of missing value ratio:
+        ```
+        ![Future_500_data_completeness](https://github.com/RalphPuzon/rosebud/blob/master/rosebud_readme_images/Future_500_data_completeness.jpg)
+        ```
+        Tables created:
+        * Future_500
+        * Future_500_Normalized
+        ```
+        variable example from above process:
+        ```python
+        print(NAICS_count)
+        231985.0
+        ```
+        #### tablesandstats() parameters:
+        - filepath = the directory of the .csv file
+        - show_plots = you can choose which specific plots are shown on screen. takes the following values: 
+        
+          - 'all': show all charts
+          - 'none': show no charts
+          - 'heatmap': show correlation grid only
+          - 'completeness': show missing data visualization only
+        
+        ### processfolder()
+        ```python
+        processfolder(folderpath, show_plots = 'all')
+        ```
+        ```processfolder()``` is a wrapper for ```tablesandstats()``` which allows you to perform the ```tablesandstats()``` function on all .csv files in a folder. This function takes in the same parameters as ```tablesandstats()```, but expects a folder path containing the .csv files, instead of the individual file path.
+        
+        ### survey()
+        ```python
+        survey(filepath, filter_by = 'all', regress = False)
+        ```
+        ```survey()``` takes in the file path, normalizes data, and performs pair plotting of the features as determined by correlation grid, stratified by levels of correlation.
+        The function also prints out the pairwise correlations stratification of the features. 
+        
+        ###### *for the following example, we will be using a file called 'data_numsOnly'
+        
+        Example:
+          
+        calling:
+        ```python
+        survey("C:/Users/YourName/.../data_numsOnly.csv", filter_by = 'strong_pos')
+        ```
+        
+        returns:
+        ```text
+        Rosebud is surveying out the data in data numsOnly (note: graphical scale is derived from a normalized data set)
+        
+        !! NOTE: data numsOnly contains NaN values, which may affect true correlation value !!
+        
+        Strong positive correlations:
+        
+        [['Establishments' 'Average Employment']
+         ['Establishments' 'Total Wage']
+         ['Average Employment' 'Total Wage']]
+        
+        Weak positive correlations:
+        
+        [['NAICS' 'Year']]
+        
+        Features with no correlations:
+        
+        [['NAICS' 'Establishments']
+         ['NAICS' 'Average Employment']
+         ['NAICS' 'Total Wage']
+         ['NAICS' 'Annual Average Salary']
+         ['Year' 'Establishments']
+         ['Year' 'Average Employment']
+         ['Year' 'Total Wage']
+         ['Year' 'Annual Average Salary']
+         ['Establishments' 'Annual Average Salary']
+         ['Establishments' 'Years Active']
+         ['Average Employment' 'Annual Average Salary']
+         ['Average Employment' 'Years Active']
+         ['Total Wage' 'Annual Average Salary']
+         ['Total Wage' 'Years Active']
+         ['Annual Average Salary' 'Years Active']]
+        
+        Weak Negative correlations:
+        
+        [['NAICS' 'Years Active']]
+        
+        Strong Negative correlations:
+        
+        [['Year' 'Years Active']]
+        
+        Pairwise relationship graphs of strong positive correlation features:
+        ```
+        ![data_numsOnly_Strong_Positive_Feature_Correlations](https://github.com/RalphPuzon/rosebud/blob/master/rosebud_readme_images/data_numsOnly_Strong_Positive_Feature_Correlations.jpg)
+        
+        #### survey() parameters:
+        - filepath = the directory of the .csv file
+        - filter_by = select the stata of correlation you want plotted:
+          - 'all' = plot all correlations (note: large datasets will take a long time for visualization)
+          - 'strong_pos' = strong positive correlation
+          - 'weak_pos' = weak positive correlation
+          - 'no_corr' No correlation
+          - 'weak_neg' = weak negative correlation
+          - 'strong_neg' = strong negative correlation
+        
+        - regress = include a best-fit line to the pairplots
+        
+        
+        ## Contributing
+        Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
+        
+        ## License
+        [MIT](https://choosealicense.com/licenses/mit/)
+        ```
+        
+Keywords: data,data visualization,data exploration,data analysis,missing data,data science,pandas,python,jupyter
+Platform: UNKNOWN
+Description-Content-Type: text/markdown
