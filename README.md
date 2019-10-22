@@ -12,7 +12,7 @@ Current implementation will require user to download the script into the working
 ```python
 from rosebud import *
 ```
-rosebud is available via pip [pip](https://pip.pypa.io/en/stable/) :
+rosebud is also available via [pip](https://pip.pypa.io/en/stable/) :
 
 ```text
 pip install rosebud
@@ -41,7 +41,7 @@ rosebud's ```tablesandstats()``` function is the libraries main function that do
 - Create the statistic variables of the DataFrame, following the pattern name ```columnName_indexName```, derived from python's ```df.summary()``` function.
 - Generate a correlation matrix heatmap of the DataFrame.
 - Generate a "missing value ratio" grid for your columns, which shows what percentage of the data are null/NaN values.
-- Creates a visualization of the missing valuves via missingno's ```missingo.matrix()``` function
+- Creates a visualization of the missing values (with column and row indication) via missingno's ```missingo.matrix()``` function
 
 ###### *for the following example, we will be using a file called 'Future_500'
 
