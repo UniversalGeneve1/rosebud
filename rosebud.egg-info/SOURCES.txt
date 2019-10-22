@@ -1,8 +1,0 @@
-README.md
-rosebud.py
-setup.py
-rosebud.egg-info/PKG-INFO
-rosebud.egg-info/SOURCES.txt
-rosebud.egg-info/dependency_links.txt
-rosebud.egg-info/requires.txt
-rosebud.egg-info/top_level.txt
